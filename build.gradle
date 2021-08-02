@@ -1,0 +1,70 @@
+plugins {
+    id 'org.springframework.boot' version '2.5.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'checkstyle'
+    id "org.owasp.dependencycheck" version "5.3.2.1"
+}
+
+ext {
+    swaggerVersion = "3.0.0"
+}
+
+group = 'io.infi'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '16'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Swagger
+    implementation "io.springfox:springfox-boot-starter:${swaggerVersion}"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+checkstyle {
+    toolVersion '8.24'
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+}
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled false
+        html.enabled true
+        html.stylesheet resources.text.fromFile('config/xls/checksyle-style.xsl')
+    }
+}
+
+dependencyCheck {
+    // the default artifact types that will be analyzed.
+    analyzedTypes = ['jar']
+    // CI-tools usually needs XML-reports or JUnit XML reports, but humans needs HTML.
+    formats = ['HTML', 'JUNIT']
+    // Specifies if the build should be failed if a CVSS score equal to or above a specified level is identified.
+    failBuildOnCVSS = 7
+    outputDirectory = "build/reports/dependency-vulnerabilities"
+    // specify a list of known issues which contain false-positives
+    suppressionFiles = ["$projectDir/config/dependencycheck/dependency-check-suppression.xml"]
+    // Sets the number of hours to wait before checking for new updates from the NVD, defaults to 4.
+    cveValidForHours = 24
+}
