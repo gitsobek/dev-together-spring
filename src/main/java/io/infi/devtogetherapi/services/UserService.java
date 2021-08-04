@@ -22,8 +22,16 @@ public class UserService implements UserOperations {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Response<UserDto> login(LoginUserRequest loginUserRequest) {
-        return null;
+    public Response login(LoginUserRequest loginUserRequest) {
+        Optional<User> userOptional = Optional.ofNullable(userRepository.findByEmail(loginUserRequest.getEmail())
+                .orElseThrow(() -> Response.badRequest(String.format("Email '%s' does not exist.", loginUserRequest.getEmail()))));
+
+        if (!passwordEncoder.matches(loginUserRequest.getPassword(), userOptional.get().getPassword())) {
+            throw Response.unauthorized("Password is incorrect.");
+        }
+
+        return Response.ok()
+                .setData(UserMapper.collect(userOptional.get(), jwtService));
     }
 
     @Override

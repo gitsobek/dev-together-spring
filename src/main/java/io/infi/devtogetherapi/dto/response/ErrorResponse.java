@@ -1,9 +1,7 @@
 package io.infi.devtogetherapi.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,13 +10,16 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@Builder(toBuilder = true)
 @RequiredArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
     private final int status;
     private final String message;
     private final String timestamp;
     private final String path;
+    private String method;
     private List<ValidationError> errors;
 
     @Getter
@@ -29,8 +30,8 @@ public class ErrorResponse {
         private final String message;
     }
 
-    public void addValidationError(String field, String message){
-        if(Objects.isNull(errors)){
+    public void addValidationError(String field, String message) {
+        if (Objects.isNull(errors)){
             errors = new ArrayList<>();
         }
         errors.add(new ValidationError(field, message));

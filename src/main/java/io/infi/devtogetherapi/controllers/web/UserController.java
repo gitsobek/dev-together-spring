@@ -21,8 +21,9 @@ public class UserController implements UserOperations {
     private final UserService userService;
 
     @Override
-    public Response<UserDto> login(LoginUserRequest loginUserRequest) {
-        return null;
+    @PostMapping("/login")
+    public Response login(LoginUserRequest loginUserRequest) {
+        return userService.login(loginUserRequest);
     }
 
     @Override

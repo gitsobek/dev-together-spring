@@ -11,8 +11,8 @@ import javax.validation.Valid;
 
 public interface UserOperations {
     @PostMapping("/login")
-    Response<UserDto> login(@Valid @RequestBody LoginUserRequest loginUserRequest);
+    Response login(@Valid @RequestBody LoginUserRequest loginUserRequest);
 
     @PostMapping("/register")
-    Response<UserDto> register(@Valid @RequestBody RegisterUserRequest registerUserRequest);
+    Response register(@Valid @RequestBody RegisterUserRequest registerUserRequest);
 }
