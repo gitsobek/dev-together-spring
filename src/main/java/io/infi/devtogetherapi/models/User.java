@@ -2,8 +2,6 @@ package io.infi.devtogetherapi.models;
 
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -21,7 +19,7 @@ import java.util.Set;
                 columnList = "email",
                 unique = true
         ))
-public class User {
+public class User extends BaseEntity {
     @Id
     @SequenceGenerator(
             name = "user_seq",
@@ -38,14 +36,6 @@ public class User {
     private String password;
     private String bio;
     private String image;
-
-    @Column(name = "created_date", nullable = false, updatable = false)
-    @CreatedDate
-    private long createdDate;
-
-    @Column(name = "modified_date")
-    @LastModifiedDate
-    private long modifiedDate;
 
     @Singular
     @OneToMany(

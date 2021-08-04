@@ -2,6 +2,7 @@ package io.infi.devtogetherapi.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.infi.devtogetherapi.exceptions.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,51 +15,33 @@ import lombok.experimental.Accessors;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Response<T> {
-    private Status status;
+    private Integer status;
     private T data;
     private Object message;
 
     public static <T> Response<T> ok() {
         Response<T> response = new Response<>();
-        response.setStatus(Status.OK);
+        response.setStatus(200);
         return response;
     }
 
-    public static <T> Response<T> badRequest() {
-        Response<T> response = new Response<>();
-        response.setStatus(Status.BAD_REQUEST);
-        return response;
+    public static BadRequestException badRequest(String message, Object... args) {
+        return new BadRequestException(String.format(message, args));
     }
 
-    public static <T> Response<T> unauthorized() {
-        Response<T> response = new Response<>();
-        response.setStatus(Status.UNAUTHORIZED);
-        return response;
+    public static UnauthorizedException unauthorized(String message, Object... args) {
+        return new UnauthorizedException(String.format(message, args));
     }
 
-    public static <T> Response<T> wrongCredentials() {
-        Response<T> response = new Response<>();
-        response.setStatus(Status.WRONG_CREDENTIALS);
-        return response;
+    public static ForbiddenException forbidden(String message, Object... args) {
+        return new ForbiddenException(String.format(message, args));
     }
 
-    public static <T> Response<T> notFound() {
-        Response<T> response = new Response<>();
-        response.setStatus(Status.NOT_FOUND);
-        return response;
+    public static NotFoundException notFound(String message, Object... args) {
+        return new NotFoundException(String.format(message, args));
     }
 
-    public enum Status {
-        OK(200),
-        BAD_REQUEST(400),
-        UNAUTHORIZED(401),
-        WRONG_CREDENTIALS(403),
-        NOT_FOUND(404);
-
-        public final Integer code;
-
-        Status(Integer code) {
-            this.code = code;
-        }
+    public static ServerErrorException serverError(String message, Object... args) {
+        return new ServerErrorException(String.format(message, args));
     }
 }

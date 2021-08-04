@@ -31,13 +31,11 @@ public class UserService implements UserOperations {
         Optional<User> userOptional = userRepository.findByEmail(registerUserRequest.getEmail());
 
         if (userOptional.isPresent()) {
-            return Response.badRequest()
-                    .setMessage(String.format("Email '%s' is already taken.", registerUserRequest.getEmail()));
+            throw Response.badRequest(String.format("Email '%s' is already taken.", registerUserRequest.getEmail()));
         }
 
-        if (userOptional.get().getUsername() == registerUserRequest.getEmail()) {
-            return Response.badRequest()
-                    .setMessage(String.format("Username '%s' is already taken.", registerUserRequest.getUsername()));
+        if (userOptional.isPresent() && userOptional.get().getUsername() == registerUserRequest.getEmail()) {
+            throw Response.badRequest(String.format("Username '%s' is already taken.", registerUserRequest.getUsername()));
         }
 
         User user = User.builder()
@@ -47,6 +45,7 @@ public class UserService implements UserOperations {
                 .build();
         userRepository.save(user);
 
-        return Response.ok().setData(UserMapper.collect(user, jwtService));
+        return Response.ok()
+                .setMessage("User has been registered successfully.");
     }
 }

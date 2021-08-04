@@ -7,8 +7,12 @@ import io.infi.devtogetherapi.dto.models.UserDto;
 import io.infi.devtogetherapi.dto.response.Response;
 import io.infi.devtogetherapi.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
@@ -22,7 +26,8 @@ public class UserController implements UserOperations {
     }
 
     @Override
-    public Response<UserDto> register(RegisterUserRequest registerUserRequest) {
+    @PostMapping("/register")
+    public Response register(@RequestBody @Valid RegisterUserRequest registerUserRequest) {
         return userService.register(registerUserRequest);
     }
 }

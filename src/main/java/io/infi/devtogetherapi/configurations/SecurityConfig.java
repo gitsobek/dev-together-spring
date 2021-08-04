@@ -14,26 +14,28 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final JwtFilter jwtFilter;
-
+//    private final JwtFilter jwtFilter;
+//
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .cors().and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)).and()
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS).permitAll()
-                .antMatchers(HttpMethod.GET).permitAll()
-                .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                .anyRequest().authenticated();
+        http.cors().and().csrf().disable().authorizeRequests().anyRequest().permitAll();
+
+//        http
+//                .csrf().disable()
+//                .cors().and()
+//                .exceptionHandling()
+//                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)).and()
+//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+////                .authorizeRequests()
+//                .antMatchers(HttpMethod.OPTIONS).permitAll()
+//                .antMatchers(HttpMethod.GET).permitAll()
+//                .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
+//                .anyRequest().authenticated();
     }
 
     @Bean
