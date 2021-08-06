@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.ZonedDateTime;
@@ -39,19 +40,36 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
             HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return new ResponseEntity<>(
+                buildErrorResponse(request, HttpStatus.METHOD_NOT_ALLOWED.value(), "Method is not supported."),
+                HttpStatus.METHOD_NOT_ALLOWED
+        );
+    }
 
+    @Override
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    protected ResponseEntity<Object> handleNoHandlerFoundException(
+            NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        return new ResponseEntity<>(
+                buildErrorResponse(request, HttpStatus.NOT_FOUND.value(), "No such endpoint"),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    private ErrorResponse buildErrorResponse(WebRequest request, int status, String message) {
         ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                "No such endpoint.",
+                status,
+                message,
                 ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT),
                 ((ServletWebRequest) request).getRequest().getRequestURI()
         );
 
         errorResponse.setMethod(((ServletWebRequest) request).getHttpMethod().toString());
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        return errorResponse;
     }
 }

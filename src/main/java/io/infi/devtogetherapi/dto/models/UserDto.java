@@ -1,6 +1,9 @@
 package io.infi.devtogetherapi.dto.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.infi.devtogetherapi.dto.enums.Roles;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -22,5 +25,6 @@ public class UserDto {
     private String bio;
     private String image;
     private String joinedAt;
-    private Collection<RoleDto> roles;
+    @JsonIgnore
+    private Roles role;
 }

@@ -13,6 +13,7 @@ public class UserMapper {
                 .token(jwtService.getToken(user))
                 .bio(user.getBio())
                 .image(user.getImage())
+                .joinedAt(user.getCreatedAt().toString())
                 .build();
     }
 }

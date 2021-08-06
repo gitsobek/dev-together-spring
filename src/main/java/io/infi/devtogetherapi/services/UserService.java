@@ -3,6 +3,7 @@ package io.infi.devtogetherapi.services;
 import io.infi.devtogetherapi.controllers.operations.UserOperations;
 import io.infi.devtogetherapi.controllers.request.LoginUserRequest;
 import io.infi.devtogetherapi.controllers.request.RegisterUserRequest;
+import io.infi.devtogetherapi.dto.enums.Roles;
 import io.infi.devtogetherapi.dto.models.UserDto;
 import io.infi.devtogetherapi.dto.response.Response;
 import io.infi.devtogetherapi.models.User;
@@ -22,7 +23,7 @@ public class UserService implements UserOperations {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Response login(LoginUserRequest loginUserRequest) {
+    public Response<UserDto> login(LoginUserRequest loginUserRequest) {
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByEmail(loginUserRequest.getEmail())
                 .orElseThrow(() -> Response.badRequest(String.format("Email '%s' does not exist.", loginUserRequest.getEmail()))));
 
@@ -30,8 +31,9 @@ public class UserService implements UserOperations {
             throw Response.unauthorized("Password is incorrect.");
         }
 
-        return Response.ok()
-                .setData(UserMapper.collect(userOptional.get(), jwtService));
+        return Response.<UserDto>ok()
+                .setData(UserMapper.collect(userOptional.get(), jwtService))
+                .setMessage("User has been logged successfully.");
     }
 
     @Override
@@ -50,6 +52,7 @@ public class UserService implements UserOperations {
                 .username(registerUserRequest.getUsername())
                 .email(registerUserRequest.getEmail())
                 .password(passwordEncoder.encode(registerUserRequest.getPassword()))
+                .role(Roles.USER)
                 .build();
         userRepository.save(user);
 

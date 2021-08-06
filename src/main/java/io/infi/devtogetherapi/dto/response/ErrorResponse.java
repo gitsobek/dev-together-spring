@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Getter
@@ -22,6 +23,13 @@ public class ErrorResponse {
     private String method;
     private List<ValidationError> errors;
 
+    public ErrorResponse(int status, Map<String, Object> errorAttributes) {
+        this.status = status;
+        this.message = (String) errorAttributes.get("message");
+        this.timestamp = errorAttributes.get("timestamp").toString();
+        this.path = (String) errorAttributes.get("path");
+    }
+
     @Getter
     @Setter
     @RequiredArgsConstructor
@@ -31,7 +39,7 @@ public class ErrorResponse {
     }
 
     public void addValidationError(String field, String message) {
-        if (Objects.isNull(errors)){
+        if (Objects.isNull(errors)) {
             errors = new ArrayList<>();
         }
         errors.add(new ValidationError(field, message));

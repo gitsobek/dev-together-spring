@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 public class Response<T> {
     private Integer status;
     private T data;
-    private Object message;
+    private String message;
 
     public static <T> Response<T> ok() {
         Response<T> response = new Response<>();

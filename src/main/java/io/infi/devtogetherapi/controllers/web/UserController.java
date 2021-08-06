@@ -22,7 +22,7 @@ public class UserController implements UserOperations {
 
     @Override
     @PostMapping("/login")
-    public Response login(LoginUserRequest loginUserRequest) {
+    public Response<UserDto> login(@RequestBody @Valid LoginUserRequest loginUserRequest) {
         return userService.login(loginUserRequest);
     }
 

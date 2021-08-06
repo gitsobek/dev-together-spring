@@ -1,5 +1,6 @@
 package io.infi.devtogetherapi.models;
 
+import io.infi.devtogetherapi.dto.enums.Roles;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -36,6 +37,7 @@ public class User extends BaseEntity {
     private String password;
     private String bio;
     private String image;
+    private Roles role;
 
     @Singular
     @OneToMany(
